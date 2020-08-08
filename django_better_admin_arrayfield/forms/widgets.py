@@ -5,6 +5,10 @@ class DynamicArrayWidget(forms.TextInput):
 
     template_name = "django_better_admin_arrayfield/forms/widgets/dynamic_array.html"
 
+    def create_or_copy(self, o):
+        return o() if isinstance(o, type) else copy.deepcopy(o)
+
+
     def get_context(self, name, value, attrs):
         context_value = value or [""]
         context = super().get_context(name, context_value, attrs)
@@ -17,7 +21,7 @@ class DynamicArrayWidget(forms.TextInput):
             widget_attrs = final_attrs.copy()
             if id_:
                 widget_attrs["id"] = "{id_}_{index}".format(id_=id_, index=index)
-            widget = forms.TextInput()
+            widget = self.create_or_copy(self.base_widget)
             widget.is_required = self.is_required
             subwidgets.append(widget.get_context(name, item, widget_attrs)["widget"])
 

@@ -19,6 +19,7 @@ class DynamicArrayField(forms.Field):
         self.default = kwargs.pop("default", None)
         kwargs.setdefault("widget", DynamicArrayWidget)
         super().__init__(**kwargs)
+        self.widget.base_widget = self.base_field.widget
 
     def clean(self, value):
         cleaned_data = []
@@ -51,3 +52,8 @@ class DynamicArrayField(forms.Field):
         if not data and not initial:
             return False
         return super().has_changed(initial, data)
+
+
+#    def widget_attrs(self, widget):
+#        widget.base_widget = self.base_field.widget
+#        return super(DynamicArrayField, self).widget_attrs(widget)
